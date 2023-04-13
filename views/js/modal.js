@@ -1,32 +1,25 @@
-'use strict'; 
-const modal = document.querySelector('.modal')
-const overlay = document.querySelector('.overlay')
-const btnCloseModal = document.querySelector('.close-modal')
-const btnsOpenModal = document.querySelectorAll('.show-modal')
+ // Get the modal element
+var modal = document.getElementById("myModal");
 
-const openModal= function () {
-      modal.classList.remove('hidden')
-   overlay.classList.remove('hidden')
+
+var btn = document.getElementsByTagName("button")[0];
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+function openModal() {
+  modal.style.display = "block";
 }
 
-const closeModal = function (){
-    modal.classList.add('hidden')
-    overlay.classList.add('hidden')
-    }
-    //open model and overlaye
-for(let e = 0;  e < btnsOpenModal.length;  e++)
-btnsOpenModal[e] .addEventListener('click' , openModal);
+ 
+function closeModal() {
+  modal.style.display = "none";
+}
 
-//close modal
-btnCloseModal.addEventListener('click' , closeModal )
-//close overlay
-overlay.addEventListener('click', closeModal)
-//key press 
-document.addEventListener('keydown', function(e){
-    //checking for event classs and close it using a pressed key
-    if (e.key === 'Escape') {
-       if (!modal.classList.contains('  hidden')) {
-            closeModal()
-       }
-    }
-})
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}

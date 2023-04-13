@@ -15,7 +15,7 @@ addEventListener("load", function () { setTimeout(hideURLbar, 0); }, false); fun
 <!--stylesheets-->
 <link href="css/style1.css" rel='stylesheet' type='text/css' media="all">
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/">
-<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="all">
+ 
 <!--//style sheet end here-->
 <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 </head>
@@ -23,41 +23,60 @@ addEventListener("load", function () { setTimeout(hideURLbar, 0); }, false); fun
 <div class="mid-class" >
 <div class="art-right-w3ls">
 <h2>Sign In and Sign Up</h2>
-<form action="#" method="post">
-<div class="main">
+ 
+<!--login form-->
+<div class="letter-w3ls">
+    <p id="response message"></p>
+<form action="" method="POST" id="signup-form">
 <div class="form-left-to-w3l">
-<input type="text" name="name" placeholder="Username" required="">
+  <small id="nameError" class="text-danger"></small>
+<input type="text" name="name" placeholder="Username" >
 </div>
-<div class="form-left-to-w3l ">
-<input type="password" name="password" placeholder="Password" required="">
-<div class="clear"></div>
+<div class="form-left-to-w3l">
+  <small class="text-danger " id="phoneError"></small>
+<input type="text" name="phone" placeholder="Phone" >
 </div>
+<div class="form-left-to-w3l">
+  <small class="text-danger" id="emailError"></small>
+<input type="email" name="email" placeholder="Email" >
 </div>
-<div class="left-side-forget">
-<input type="checkbox" class="checked">
-<span class="remenber-me">Remember me </span>
+<div class="form-left-to-w3l">
+  <small class="text-danger" id="passwordError"></small>
+<input type="password" name="password" placeholder="Password" >
 </div>
-<div class="right-side-forget">
-<a href="#" class="for">Forgot password...?</a>
+<div class="form-left-to-w3l margin-zero">
+  <small class="alert text-danger" id="confirm_passwordError"></small>
+    <input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" >
 </div>
-<div class="clear"></div>
-<div class="btnn">
-<button type="submit">Sign In</button>
-</div>
-</form>
 <div class="w3layouts_more-buttn">
 <h3>Don't Have an account..?
-<a href="signin.php">Sign Up Here
-</a>
+<a href="login.php">Sign In Here  </a>
 </h3>
 </div>
+
+<div class="btnn">
+    <button class="btn btn-primary w-md waves-effect waves-light" id="sign-btn" type="submit">
+        <span id="sign-txt">Sign up </span>
+        <div class="spinner-border spinner-border-sm m-0" id="sign-spinner"
+        style="display: none;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</button>
+<br>
+</div>
+</form>
+<div class="clear"></div>
+</div>
+<!--//login form-->
+ 
+
 <!-- popup-->
 
 <!-- //popup -->
 </div>
 <div class="art-left-w3ls">
 <h1 class="header-w3ls">
-<a href="/project/views/index.php"> Euphony</a>
+<a href="htttp://127.0.0.1/fyi/views/home.php"> Euphony</a>
 </h1>
 </div>
 </div>
@@ -68,6 +87,40 @@ addEventListener("load", function () { setTimeout(hideURLbar, 0); }, false); fun
 </p>
 </footer>
 
+<script src="js/custom.js"></script>
+<script src="js/jquery.js"></script>
+<script>
+$('#signup-form').submit(el => {
+el.preventDefault()
+spin('sign')
+const formData = new FormData(el.target,);
+$.ajax({
+      type: 'POST',
+      url: 'create',
+      data:formData,
+      processData: false,
+  contentType: false,
+      dataType: 'json',
+      success: function(response) {
+        if (response.status === 'success') {
+          // Display the success message on the HTML page
+          window.location.href = "success.php";
+          $('#response').html(response.message);
+        } else {
+          spin('sign')
+          // Display the error messages on the HTML page
+          $('#nameError').html(response.nameError);
+          $('#phoneError').html(response.phoneError);
+          $('#passwordError').html(response.passwordError);
+          $('#emailError').html(response.emailError);
+          $('#confirm_passwordError').html(response.confirm_passwordError);
+          
+        }
+      }
+    });
+    
 
+    });
+</script>
 </body>
 </html>

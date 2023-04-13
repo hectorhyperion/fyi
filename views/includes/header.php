@@ -21,6 +21,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!-- /css files -->
 <!-- js files -->
 <script src="js/modernizr.custom.js"></script>
+
 <!-- /js files -->
 </head>
 <body>

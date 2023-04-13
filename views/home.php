@@ -45,38 +45,62 @@
 <h3 class="text-center">Land Your Dream Role Now</h3>
 <p class="text-center">Here Are Few Reasons</p>
 <hr>
- 
-<!-- Button to open the modal -->
-<button class="show-modal">Show modal 3</button>
-<div class="modal hidden">
-  <button class="close-modal">&times;</button>
-  <h1>I'm a modal window 😍</h1>
-  <p>
-	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-	veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-	commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-	velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-	occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-	mollit anim id est laborum.
-  </p>
-</div>
-<div class="overlay hidden"></div>
-<script src="js/modal.js"></script>
- <div id="data-container">
-</div>
-<script src="js/jquery.js"></script>
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+	<div id="subform"></div>
+	<form class="form-container" id="update-form" data-id="id">
+		<input type="hidden" name="id" id="id">
+<div class="message" id=" message"></div>
+<div class="form-column">
+<label for="name">Company Name</label>
+<input type="text" id="name" name="company_name">
+<small class="text-danger" id="company_nameError"></small>
 
+<label for="email">Email </label>
+<input type="email" id="email" name="email">
+<small class="text-danger" id="emailError"></small>
+
+<label for="location">Location </label>
+<input type="text" id="location" name="location">
+<small class="text-danger" id="locationError"></small>
+</div>
+<div class="form-column">
+<label for="movie">Movie Name</label>
+<input type="text" id="movie" name="movie_name">
+<small class="text-danger" id="movie_nameError"></small>
+
+<label for="roles">Roles needed </label>
+<input type="text" id="roles" name="roles">
+<small class="text-danger" id="rolesError"></small>
+
+<label for="description">Job description</label>
+<textarea id="body-input" name="body" rows="3" ></textarea>
+<small class="text-danger" id="bodyError"></small>
+</div>
+<div class="form-button">
+<button type="submit" id="submit-btn"><span id="submit-txt"> Submit</span>
+<div class="spinner-border text-secondary" style="display:none" id="hidden" role="status">
+<span class="sr-only">Loading...</span>
+</div>
+</div>
+</form>
+		<div id="edit"></div>
+  </div>
+</div>	
+ <div id="data-container"></div>
+<script src="js/modal.js"></script>
+<script src="js/jquery.js"></script>
 <script>
 	 $(document).ready(function() {
             // Make an AJAX request to the PHP script
+			function fetchData() {
             $.get("job/data", function(response) {
                 // Parse the JSON response
 	            var data = JSON.parse(JSON.stringify(response));
 				// Loop through the data and create HTML elements to display it
-				const count = data[0].count;
+				 
 				var html = "";
-			 
 					for (var i in data){
                     html += "<div class='row'>"+ 
 					"<div class='col-lg-3 col-md-3 info-w3ls'>"
@@ -85,6 +109,7 @@
 					+"<i class='hi-icon fa fa-cog'><a href='#'></a></i>"
 					   +'<h4>'+ data[i].company_name+'</h4>' 
 					   +'<h3 style="color:#fff">'+ data[i].location+'</h3>' 
+					   			+'<small style="color:white">'+ data[i].roles+'</small>'
 					       +'<p class="info-p1">'+data[i].body+'</p>'+"</div>"
 							+"<a href='#' style= 'margin:3px' class='btn btn-primary'>apply</a >"
 						+ '<button style="margin:3px" data-id="'+ data[i].id + '"class="btn btn-info edit">edit</button >'
@@ -93,7 +118,11 @@
 						"</div>"+ "</div>"	;
 					}
 					$("#data-container").html(html);
-					});
+					
+				});
+			}
+			fetchData();
+				setInterval(fetchData, 1000);
 					
 			$(document).on('click', '.delete', function(e){
 					e.preventDefault();
@@ -109,37 +138,53 @@
 			//Handle error response
 			}});
 			})
+
 			$(document).on('click','.edit', function(e){
-			//	e.preventDefault();
-			
+				e.preventDefault();
+				openModal();
 			var id = $(this).data('id');
 					$.ajax({
-			url: 'fetch/'+id,
-			method: 'GET',
+						url: 'fetch/'+id,
+						method: 'GET',
 			success: function(response) {
 			// Handle success response
 			var data = JSON.parse(JSON.stringify(response));
-				// Loop through the data and create HTML elements to display it
+			$('#name').val(data.company_name);
+			$('#email').val(data.email);
+			$('#location').val(data.location);
+			$('#movie').val(data.movie_name);
+			$('#roles').val(data.roles);
+   		   $('#body-input').val(data.body);
+		  $("#id").val(data.id);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			}
-		})
+		})	
+	
+		$(document).on('submit','#update-form', function(e){
+		e.preventDefault()
+		const formData = new FormData(e.target,);
+		$.ajax({
+		url: 'put/'+id,
+		type: "POST",  
+		data:formData,
+		processData: false,
+		contentType: false,
+		dataType: 'json',
+		success: function(response) {
+		// Handle the successful response from the server
+		$("#subform").html(response).delay(4000).hide(1); 
+		closeModal();
+		
+		},
+		error: function(xhr, status, error) {
+		// Handle the error response from the server
+		console.log("Error: " +error);
+		}
+		});
+	})
 })
-// var id = $(this).data('id');
-// $.ajax({
-//       url:'update'+id ,
-//       type: "PUT", // Use the HTTP PUT method for updating data
-//       data: data,
-//       success: function(response) {
-//         // Handle the successful response from the server
-//         $("#result").html("Data updated successfully!");
-//       },
-//       error: function(xhr, status, error) {
-//         // Handle the error response from the server
-//         console.log("Error: " + error);
-//       }
-//     });
-        });
+});
 
 </script>
 

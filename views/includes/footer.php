@@ -123,7 +123,7 @@ $(document).ready(function(){
 <script>
 	   $('#joinus').click(e=>{
 		e.preventDefault();
-		location.href= '/fyi/views/signup.php';
+		location.href= '/fyi/views/login.php';
 	   })
 </script>
 <!-- /js for tabs -->
