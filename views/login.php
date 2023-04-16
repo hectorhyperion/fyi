@@ -1,73 +1,104 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zxx">
 <head>
-<title>Project</title>
-<!-- Meta tags -->
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Gaze Sign up & login Form Responsive Widget, Audio and Video players, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design"
-/>
-<script>
-addEventListener("load", function () { setTimeout(hideURLbar, 0); }, false); function hideURLbar() { window.scrollTo(0, 1); }
-</script>
-<!-- Meta tags -->
-<!--stylesheets-->
-<link href="css/style1.css" rel='stylesheet' type='text/css' media="all">
-<link rel="stylesheet" href="css/bootstrap.min.css" type="text/">
-<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="all">
-<!--//style sheet end here-->
-<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+<title>Gathering Log In form Responsive Widget Template :: W3layouts</title>
+<!-- Meta tag Keywords -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<!-- //Meta tag Keywords -->
+<link href="//fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<!--/Style-CSS -->
+<link rel="stylesheet" href="css/style1.css" type="text/css" media="all" />
+<!--//Style-CSS -->
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="all">
 </head>
 <body>
-<div class="mid-class" >
-<div class="art-right-w3ls">
-<h2>Sign In and Sign Up</h2>
-<form action="#" method="post">
-<div class="main">
-<div class="form-left-to-w3l">
-<input type="text" name="name" placeholder="Username" required="">
-</div>
-<div class="form-left-to-w3l ">
-<input type="password" name="password" placeholder="Password" required="">
-<div class="clear"></div>
-</div>
-</div>
-<div class="left-side-forget">
-<input type="checkbox" class="checked">
-<span class="remenber-me">Remember me </span>
-</div>
-<div class="right-side-forget">
-<a href="#" class="for">Forgot password...?</a>
-</div>
-<div class="clear"></div>
-<div class="btnn">
-<button type="submit">Sign In</button>
-</div>
-</form>
-<div class="w3layouts_more-buttn">
-<h3>Don't Have an account..?
-<a href="signup.php">Sign Up Here
-</a>
-</h3>
-</div>
-<!-- popup-->
+<div class="w3l-signinform">
+<!-- container -->
+<div class="wrapper">
+<!-- main content -->
+<div class="w3l-form-info">
+<div class="w3_info">
+    <h1>Welcome Back</h1>
+    <p class="sub-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+    <h2>Log In</h2>
+    <div id="success"></div>
+    <form action="#" id="login-form" method="">
+        <div class="input-group">
+            <span><i class="fa fa-user" aria-hidden="true"></i></span>
+            <input type="email"name="email" placeholder="Username" >
+            <strong id="errorEmail"></strong>
+        </div>
+        <div class="input-group two-groop">
+            <span><i class="fa fa-key" aria-hidden="true"></i></span>
+            <input type="Password" placeholder="Password" name="password">
+            <strong id="errorPassword" ></strong>
+        </div>
+        <div class="form-row bottom">
+            <div class="form-check">
+                <input type="checkbox" id="remenber" name="remenber" value="remenber">
+                <label for="remenber"> Remember me?</label>
+            </div>
+            <a href="#url" class="forgot">Forgot password?</a>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Log In</button>
+    </form>
 
-<!-- //popup -->
-</div>
-<div class="art-left-w3ls">
-<h1 class="header-w3ls">
-<a href="/project/views/index.php"> Euphony</a>
-</h1>
+    <p class="account">Don't have an account? <a href="register.php">Register</a></p>
 </div>
 </div>
-<footer class="bottem-wthree-footer">
-<p>
-© 2019 Gaze Sign Up & Login Form. All Rights Reserved | Design by
-<a href="http://www.W3Layouts.com" target="_blank">W3Layouts</a>
-</p>
-</footer>
-
+<!-- //main content -->
+</div>
+<!-- //container -->
+<!-- footer -->
+<div class="footer">
+<p>&copy; 2021 Gathering Log In form. All Rights Reserved | Design by <a href="https://w3layouts.com/"
+    target="blank">W3layouts</a></p>
+</div>
+<!-- footer -->
+</div>
 
 </body>
+<script src="js/jquery.js"></script>
+<script>
+$(document).ready(function () {
+$('#login-form').submit(e => {
+e.preventDefault();
+
+const formData = new FormData(e.target);
+$.ajax({
+url: 'login',
+type: 'POST',
+data: formData,
+processData: false,
+contentType: false,
+dataType:'json',
+success: function(response) {
+if (response.status == 'success') {
+    $('#success').text(response.message).addClass('alert alert-success');
+}
+else{
+$('#errorEmail').html(response.emailError);
+$('#errorPassword').html(response.passwordError);
+}
+setTimeout(() => {
+        
+			$("#errorEmail").html("");
+			$("#errorPassword").html("");
+			$("#message").html("");
+			$("#message").removeClass("alert");
+        }, 4000);
+	
+
+}
+
+})
+
+})
+
+})  
+
+</script>
+
 </html>

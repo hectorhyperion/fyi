@@ -94,4 +94,29 @@
     text-decoration: none;
     cursor: pointer;
   }
+  .spin-button {
+    border: none;
+    background-color: #f2f2f2;
+    color: #555;
+    font-size: 16px;
+    padding: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .spin-button:hover {
+    transform: rotate(90deg);
+    background-color: #ddd;
+  }
+  
+  .spin-button i {
+    transition: all 0.3s;
+  }
+  
+  .spin-button:hover i {
+    transform: translateY(-3px);
+  }
   

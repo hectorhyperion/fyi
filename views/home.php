@@ -45,10 +45,10 @@
 <h3 class="text-center">Land Your Dream Role Now</h3>
 <p class="text-center">Here Are Few Reasons</p>
 <hr>
+<div id="subform" class="alert aler-success"></div>
 <div id="myModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-	<div id="subform"></div>
 	<form class="form-container" id="update-form" data-id="id">
 		<input type="hidden" name="id" id="id">
 <div class="message" id=" message"></div>
@@ -121,8 +121,8 @@
 					
 				});
 			}
-			fetchData();
-				setInterval(fetchData, 1000);
+		  		fetchData();
+				setInterval(fetchData, 5000);
 					
 			$(document).on('click', '.delete', function(e){
 					e.preventDefault();
@@ -132,10 +132,10 @@
 			method: 'DELETE',
 			success: function(response) {
 			// Handle success response
-			console.log(response);
+		 
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-			//Handle error response
+				alert(errorThrown);
 			}});
 			})
 
@@ -178,68 +178,69 @@
 		
 		},
 		error: function(xhr, status, error) {
-		// Handle the error response from the server
-		console.log("Error: " +error);
+		
 		}
 		});
 	})
 })
 });
-
 </script>
-
 </div>
 </section>
 <!-- /info section -->
 <!-- team section -->
 <section class="team" id="team">
-<div id="response"></div>
+<div id="message"></div>
 <form class="form-container" id="job-form">
 <div class="message" id=" message"></div>
 <div class="form-column">
 <label for="name1">Company Name</label>
 <input type="text" id="name1" name="company_name">
-<small class="text-danger" id="company_nameError"></small>
+<small class="text-danger" id="company_name"></small>
 
 <label for="email1">Email </label>
 <input type="email" id="email1" name="email">
-<small class="text-danger" id="emailError"></small>
+<small class="text-danger" id="email-id"></small>
 
 <label for="location">Location </label>
 <input type="text" id="location" name="location">
-<small class="text-danger" id="locationError"></small>
+<small class="text-danger" id="location-id"></small>
 </div>
-
 <div class="form-column">
 <label for="movie">Movie Name</label>
 <input type="text" id="movie" name="movie_name">
-<small class="text-danger" id="movie_nameError"></small>
+<small class="text-danger" id="movie_name"></small>
 
 <label for="rolls">Roles needed </label>
 <input type="text" id="rolls" name="roles">
-<small class="text-danger" id="rolesError"></small>
+<small class="text-danger" id="roles-id"></small>
 
 <label for="description">Job description</label>
 <textarea id="body-input" name="body" rows="3" ></textarea>
-<small class="text-danger" id="bodyError"></small>
+<small class="text-danger" id="body"></small>
 </div>
 
 <div class="form-button">
-<button type="submit" id="submit-btn"><span id="submit-txt"> Submit</span>
-<div class="spinner-border text-secondary" style="display:none" id="hidden" role="status">
-<span class="sr-only">Loading...</span>
+<button type="submit" id="submit-btn"><span id="button-txt"> Submit</span> 
+<div id="button-spinner"  class="spin-button" 
+style="display: none;" role="status">
+    <span class="sr-only">Loading...</span>
 </div>
-
-</div>
+</button>
 </form>
 <script src="js/jquery.js"></script>
 <script >
+$(document).ready(function(){
+	let btnDis = false
 $('#job-form').submit(el => {
+	
 el.preventDefault()
-
-$('#submit-btn').prop('disabled', true);
-$('#submit-txt').hide();
-$('#hiden').removeAttr('style') ;
+btnDis = btnDis ? false : true;
+    $(`#button-txt`).toggle();
+    $(`#button-spinner`).toggle();
+    btnDis
+        ? $(`#submit-btn`).attr("disabled", true)
+        : $(`#submit-btn`).removeAttr("disabled");
 const formData = new FormData(el.target,);
 $.ajax({
 type: 'POST',
@@ -249,30 +250,46 @@ processData: false,
 contentType: false,
 dataType: 'json',
 success: function(response) {
-if (response.status === 'success') {
+if (response.status == 'success') {
 // Display the success message on the HTML page
-$('#response').html(response.message).addClass('alert alert-success text-center ').delay(3000).fadeOut(1000);
+$('#message').html(response.message).addClass('alert alert-success text-center');
 $("#job-form")[0].reset();
-
-} else {
-// Display the error messages on the HTML page
-// Define a named function
-$('#company_nameError').html(response.company_nameError).delay(3000).fadeOut(1000);
-$('#emailError').html(response.emailError).delay(3000).fadeOut(1000);
-$('#locationError').html(response.locationError).delay(3000).fadeOut(1000);
-$('#rolesError').html(response.rolesError).delay(3000).fadeOut(1000);
-$('#bodyError').html(response.bodyError).delay(3000).fadeOut(1000);
-$('#movie_nameError').html(response.movie_nameError).delay(3000).fadeOut(1000);
-$('#submit-btn').prop('disabled', false);
-$('#submit-txt').show();
-$('#hiden').removeClass('spinner-border text-primary');
+btnDis = btnDis ? false : true;
+    $(`#button-txt`).toggle();
+    $(`#button-spinner`).toggle();
 }
-}
+else {
+	btnDis = btnDis ? false : true;
+    $(`#button-txt`).toggle();
+    $(`#button-spinner`).toggle();
+	$('#company_name').html(response.company_nameError)
+	  $('#email-id').html(response.emailError)
+	  $('#roles-id').html(response.rolesError)
+	  $('#body').html(response.bodyError)
+	  $('#movie_name').html(response.movie_nameError)
+		$('#location-id').html(response.locationError)
+		}
+		setTimeout(() => {
+            $("#company_name").html("");
+			$("#email-id").html("");
+			$("#location-id").html("");
+			$("#roles-id").html("");
+			$("#body").html("");
+			$("#movie_name").html("");
+			$("#message").html("");
+			$("#message").removeClass("alert");
+        }, 4000);
+	
+	}
+})
 });
 
 });
+
 </script>
 </section>
+
+
 <!-- /team section -->
 <!-- testimonial section -->
 <section class="testimonial">

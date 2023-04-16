@@ -17,11 +17,10 @@
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li class="active"><a href="#">Home</a></li>
-							<li><a href="#about">About</a></li>
+							<li><a href="#about"></a></li>
 							<li><a href="#info">Find A job</a></li>
 							<li><a href="#team">Post A Job</a></li>
 							<li><a href="#work">Work</a></li>
-							<li><a href="#contact">Contact</a></li>
 							<li><a href="" id='joinus'>Join Us</a></li>
 						</ul>
 					</div>	

@@ -1,9 +1,18 @@
 <?php 
 require  __DIR__ . '../../vendor/autoload.php';
+use Firebase\JWT\Key;
+
+use Firebase\JWT\JWT;
+ 
+if(isset($_SESSION['user_id'])) {
+  header('Location: dashboard.php');
+  exit;
+}
+
 date_default_timezone_set('UTC');
 
 $host = 'localhost';
-$dbname = 'project';
+$dbname = 'fyi';
 $username = 'root';
 $password = '';
 
@@ -13,19 +22,19 @@ try {
   die("Error connecting to database: " . $e->getMessage());
 }
 
-
-
 Flight::route('/', function(){
     Flight::redirect('/home.php');
 });
-
+//create job 
 Flight::route('POST /job-form', function() use ($pdo){
+
     $company_name = Flight::request()->data['company_name'];
     if (!isset($company_name) || trim($company_name) === '') {
+
       $response['status'] = 'error';
       $response['company_nameError'] = 'comapny_name is required.';
+     
   }
-
     $email = Flight::request()->data['email'];
     if (!isset($email)|| trim($email) === '') {
         $response['status'] = 'error';
@@ -67,43 +76,39 @@ else {
     $stmt->bindParam(':movie_name', $movie_name);
     $stmt->execute();
     $response = ["status" => "success"];
+    $response['message'] = 'Job Created !';
 }
-
-$response['message'] = 'Job Created !';
    Flight::json([...$response]);
-
   });
 
-  Flight::route('GET /job/data', function(){
+
+  Flight::route('GET /job/data', function() use($pdo){
     // assume you have a PDO connection and a query that fetches data
-$pdo = new PDO('mysql:host=localhost;dbname=project', 'root', '');
+ 
 $stmt = $pdo->query('SELECT * FROM jobs');
-
 // create an array to hold the results
-
 $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // encode the results array as JSON and output it
 //$jsonResponse = json_encode($results);
      // return the results as JSON
+
     Flight::json($row);
   });
   
   //delete function 
-  Flight::route('DELETE  /delete/@id', function($id) {
-    $pdo = new PDO('mysql:host=localhost;dbname=project', 'root', '');
+  Flight::route('DELETE  /delete/@id', function($id) use($pdo) {
+  
     $stmt = $pdo->prepare('DELETE FROM jobs WHERE id = :id');
 $stmt->execute(array(':id' => $id));
 
 Flight::json(array('success' => true, 'message' => 'Item deleted successfully'));
 
 });
-Flight::route('GET /fetch/@id', function($id){
+Flight::route('GET /fetch/@id', function($id) use($pdo) {
   // assume you have a PDO connection and a query that fetches data
-$pdo = new PDO('mysql:host=localhost;dbname=project', 'root', '');
 $stmt = $pdo->prepare('SELECT * FROM jobs WHERE id= :id');
 $stmt->execute(array(':id' => $id));
 // create an array to hold the results
-
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 // encode the results array as JSON and output it
 //$jsonResponse = json_encode($results);
@@ -113,12 +118,11 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 //update data 
 Flight::route('POST /put/@id', function($id) use($pdo){
-  $conn = new PDO('mysql:host=localhost;dbname=project', 'root', '');
-
+ 
   $company_name = Flight::request()->data['company_name'];
   if (!isset($company_name) || trim($company_name) === '') {
     $response['status'] = 'error';
-    $response['company_nameError'] = 'comapny_name is required.';
+    $response['company_nameError'] = 'comapny name is required.';
 }
   $email = Flight::request()->data['email'];
   if (!isset($email)|| trim($email) === '') {
@@ -168,69 +172,123 @@ else {
 });
 
 //create user 
-Flight::route('POST /create', function(){
-  $dsn = 'mysql:host=localhost;dbname=project';
-  $username = 'root';
-  $password = '';
-  
-  try {
-      $pdo = new PDO($dsn, $username, $password);
-  } catch (PDOException $e) {
-      echo 'Connection failed: ' . $e->getMessage();
-      exit();
+Flight::route('POST /create', function() use ($pdo){
+  $password =  password_hash($_POST['password'], PASSWORD_DEFAULT);
+  $name = Flight::request()->data['name'];
+  if (!isset($name) || trim($name) === '') {
+    $response['status'] = 'error';
+    $response['nameError'] = 'name is required.';
+}
+  $email = Flight::request()->data['email'];
+  if (!isset($email)|| trim($email) === '') {
+      $response['status'] = 'error';
+      $response['emailError'] = 'Email is required.';
   }
-      // define variables and set to empty values
-      $response = array();
-  
-      //get data from post
-      
-      $name = $_POST['name'];
-      $email = $_POST['email'];
-      $phone = $_POST['phone'];
-      $password =  password_hash($_POST['password'], PASSWORD_DEFAULT);
-      
-      if (empty($_POST['name'])) {
-          $response['status'] = 'error';
-          $response['nameError'] = 'Name is required.';
-      }
-      
-      if (empty($_POST['email'])) {
-          $response['status'] = 'error';
-          $response['emailError'] = 'Email is required.';
-      }
-      
-      if (empty($_POST['phone'])) {
-          $response['status'] = 'error';
-          $response['phoneError'] = 'phone  is required.';
-      }
-      if (empty($_POST['password' ])) {
-          $response['status'] = 'error';
-          $response['passwordError'] = 'password  is required. ';
-      }
-      if ($_POST['password'] != $_POST['confirm_password']) {
-          $response['status'] = 'error';
-          $response['confirm_passwordError']='password does not match';
-      }    
-      if (!empty($response)) {
-          $response['success'] = false;
-          $response['errors'] = $response;
-      } else {
-      $response['success'] = true;
-      $response['message'] = 'Data submited !';
-  
-  
-      //insert  into  the database
-      $stmt = $pdo->prepare('INSERT INTO users (username, email, phone, password) VALUES (:name, :email, :phone, :password )');
-      $stmt->execute(array(
-        ':name' => $name,
-        ':email' => $email,
-        ':phone' => $phone,
-        ':password' => $password
-      ));
-  
-    }
-    // Encode the response as JSON and return it
-   Flight::json($response);
+  $phone = Flight::request()->data['phone'];
+  if (!isset($phone)|| trim($phone) === '') {
+      $response['status'] = 'error';
+      $response['phoneError'] = 'phone  is required.';
+  }
+  if (empty($_POST['password' ])|| trim($_POST['password']) === '') {
+      $response['status'] = 'error';
+      $response['passwordError'] = ' Password  is required. ';
+  }
+if (!empty($response)) {
+  $response['success'] = false;
+  $response['errors'] = $response;
+} 
+else {
+$stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password) VALUES (:name, :email, :phone, :passowrd)");
+$stmt->bindParam(':name', $name);
+  $stmt->bindParam(':email', $email);
+  $stmt->bindParam(':phone', $phone);
+  $stmt->bindParam(':passowrd', $password);
+  $stmt->execute();
+  $response = ["status" => "success"];
+  $response['message'] = 'User Created !';
+
+  //setting jwt 
+  $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+  $user_id = $pdo->lastInsertId();
+  $payload = array(
+    "user_id" => $user_id,
+    "username" => $name,
+    "exp" => time() + 3600
+  );
+ $key = random_bytes(32);
+  $jwt = JWT::encode($payload, $key , 'HS256');
+  session_start();
+$_SESSION['jwt'] = $jwt;
+$_SESSION['user_id'] = $payload['user_id'];
+
+$jwt = $_SESSION['jwt'];
+$decoded = JWT::decode($jwt,new Key($key ,'HS256'));
+if ($decoded->exp < time()) {
+  // Token has expired
+  // Redirect to login page or return error message
+} else {
+  // Token is valid
+  $user_id = $_SESSION['user_id'];
+  // Allow the request to proceed
+  Flight::json($user_id);
+}
+}
+ Flight::json([...$response]);
 });
+Flight::route('POST /login', function()use($pdo){
+
+
+    $email = Flight::request()->data['email'];
+    $data = Flight::request()->data['password'];
+    $password = password_hash($data, PASSWORD_DEFAULT);
+
+    if (empty($_POST['email'])) {
+        $response['status'] = 'error';
+        $response['emailError'] = 'Email is required.';
+    }
+    if (empty($_POST['password' ])) {
+        $response['status'] = 'error';
+        $response['passwordError'] = 'password  is required. ';
+    }
+    if (!empty($response)) {
+        $response['success'] = false;
+        $response['errors'] = $response;
+    } else {
+        $response['success'] = true;
+//requesting data 
+        $email = Flight::request()->data['email'];
+        $password = Flight::request()->data['password'];
+
+        $db =  $pdo;
+        $stmt = $db->prepare('SELECT * FROM users WHERE  email = :email');
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($user && password_verify($password, $user['password'])) {
+
+  $payload = array(
+    "iss" => '127.0.0.1',
+    'aud'=>'127.0.0.1',
+    'iat' => time(),
+    'exp' => time()+ 3600,
+    'sub' => $email
+  );
+  $key = random_bytes(32);
+  $jwt = JWT::encode($payload, $key, 'HS256');
+  Flight::response()->header('Content-Type', 'application/json');
+  Flight::response()->status(200);
+  Flight::response()->body(json_encode(array('token' => $jwt)));
+  
+}
+else{
+    Flight::halt(401, 'Invalid Credentials');
+}
+         
+    }
+
+    Flight::json($response);
+
+});
+
 Flight::start();
 ?>

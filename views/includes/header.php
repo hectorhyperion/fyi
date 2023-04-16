@@ -12,6 +12,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href='//fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
 <!-- /font files -->
 <!-- css files -->
+
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" />
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" media="all" />
 <link href="css/jQuery.lightninBox.css" rel="stylesheet" type="text/css" media="all" />
