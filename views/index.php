@@ -148,7 +148,7 @@ if (!empty($response)) {
 } 
 else {
     
-  $stmt = $pdo->prepare("UPDATE  jobs SET company_name = :company_name, email = :email, location = :location, roles = :roles, body = :body, movie_name = :movie_name  WHERE id = :id");
+  $stmt = $pdo->prepare("UPDATE  jobs SET company_name = :company_name, email = :email, location = :location, roles = :roles, body = :body, movie_name = :movie_name  WHERE user_id = :id");
   $stmt->bindParam(':id', $id);
   $stmt->bindParam(':company_name', $company_name);
     $stmt->bindParam(':email', $email);

@@ -111,7 +111,7 @@
 					   			+'<small style="color:white">'+ data[i].roles+'</small>'
 					       +'<p class="info-p1">'+data[i].body+'</p>'+"</div>"
 							+"<a href='#' style= 'margin:3px' class='btn btn-primary'>apply</a >"
-						+ '<button style="margin:3px" data-id="'+ data[i].id + '"class="btn btn-info edit">edit</button >'
+						+ '<button style="margin:3px" data-id="'+ data[i].user_id + '"class="btn btn-info edit">edit</button >'
 					    +'<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a >'
 						+'<span class="line1"></span>'+
 						"</div>"+ "</div>"	;
@@ -133,11 +133,7 @@
   .split('=')[1];
   const decodedToken = jwt_decode(jwtToken);
   const userId = decodedToken.user_id;
-
-
-					var id = $(this).data('id');
-
-					console.log(id);
+					var id = $(this).data('id');				 
 					if (userId === id) {
 								$.ajax({
 			url: 'delete/'+id,
@@ -151,15 +147,22 @@
 			}});
 					}
 					else{
-						alert('pisss off you wanker ')
+						 alert('only the owner can delete this post');
 					}
 			
 			})
 
 			$(document).on('click','.edit', function(e){
-				e.preventDefault();
+				const jwtToken = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('jwt_token='))
+  .split('=')[1];
+  const decodedToken = jwt_decode(jwtToken);
+  const userId = decodedToken.user_id;
+			e.preventDefault();
+				var id = $(this).data('id');
+				if (userId === id) {
 				openModal();
-					var id = $(this).data('id');
 					$.ajax({
 						url: 'fetch/'+id,
 						method: 'GET',
@@ -176,7 +179,12 @@
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			}
+			
 		})	
+	}
+	else{
+		alert('only the owner can delete this postNot allowed');
+	}
 	
 		$(document).on('submit','#update-form', function(e){
 		e.preventDefault()
