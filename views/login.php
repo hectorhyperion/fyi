@@ -39,7 +39,7 @@
                             <small style="color:lavenderblush" id="password"></small>
                         </div>
                         
-                        <button class="btn btn-primary btn-block" type="submit">Sign Ip </button>
+                        <button class="btn btn-primary btn-block" type="submit">Sign IN </button>
                     </form>
                 
                     <p class="account"> have an account? <a href="register.php">SignUp</a></p>

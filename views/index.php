@@ -57,6 +57,7 @@ Flight::route('POST /job-form/@userId', function($userId) use ($pdo){
     $response['errors'] = $response;
 } 
 else {
+
   $stmt = $pdo->prepare("INSERT INTO jobs (company_name, email, location, roles, body, movie_name, user_id) VALUES (:company_name, :email, :location, :roles, :body, :movie_name, :user_id)");
   $stmt->bindParam(':company_name', $company_name);
     $stmt->bindParam(':email', $email);
@@ -89,7 +90,7 @@ $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
   //delete JOBs 
   Flight::route('DELETE  /delete/@id', function($id) use($pdo) {
   
-    $stmt = $pdo->prepare('DELETE FROM jobs WHERE id = :id');
+    $stmt = $pdo->prepare('DELETE FROM jobs WHERE user_id = :id');
 $stmt->execute(array(':id' => $id));
 
 Flight::json(array('success' => true, 'message' => 'Item deleted successfully'));
@@ -181,10 +182,16 @@ Flight::route('POST /create', function() use ($pdo){
       $response['status'] = 'error';
       $response['phoneError'] = 'phone  is required.';
   }
+  $userType = Flight::request()->data['userType'];
+  if (!isset($userType)|| trim($userType) === '') {
+      $response['status'] = 'error';
+      $response['userTypeError'] = 'userType  is required.';
+  }
   if (empty($_POST['password' ])|| trim($_POST['password']) === '') {
       $response['status'] = 'error';
       $response['passwordError'] = ' Password  is required. ';
   }
+ 
 if (!empty($response)) {
   $response['success'] = false;
   $response['errors'] = $response;
@@ -200,10 +207,11 @@ if ($count > 0) {
   exit();
 }else {
 
-$stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password) VALUES (:name, :email, :phone, :passowrd)");
+$stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, userType) VALUES (:name, :email, :phone, :passowrd, :userType)");
 $stmt->bindParam(':name', $name);
   $stmt->bindParam(':email', $email);
   $stmt->bindParam(':phone', $phone);
+  $stmt->bindParam(':userType', $userType);
   $stmt->bindParam(':passowrd', $password);
   $stmt->execute();   
 
@@ -244,16 +252,15 @@ Flight::route('POST /login', function()use($pdo){
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        $user_id= $user['user_id'];
+         
 if ($user && password_verify($password, $user['password'])) {
- 
   $payload = array(
     "iss" => '127.0.0.1',
     'aud'=>'127.0.0.1',
     'iat' => time(),
     'exp' => time()+ 3600,
     'sub' => $email,
-    'user_id' => $user_id
+    'user_id' => $user['user_id'],
   );
   $key =' 3d d9 ac 4b 96 c0 0e 4f 2e 88 73 d5 f4 96 7d 43 
   27 25 e6 34 e1 e4 0f 72 e8 f9 98 9e 56 3a ff f2';
@@ -265,7 +272,6 @@ if ($user && password_verify($password, $user['password'])) {
   Flight::response()->send();
   setcookie('jwt_token', $jwt, time() + 3600, '/');
 // Redirect the user to the home page
-exit;
 }
 else{
   Flight::json(array('error' => 'Invalid Credentials'),401);

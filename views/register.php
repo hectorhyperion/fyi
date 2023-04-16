@@ -41,6 +41,14 @@
                             <input type="text" name="phone" placeholder=" Phone" >
                             <small style="color:lavenderblush" id="phone"></small>
                         </div>
+                        <div >
+                        <select name="userType" class="input-group ">
+                                        <option value=""> </option>
+                                        <option value="talent">Talent</option>
+                                        <option value="employer">employer</option>
+                                        </select>
+                                        <small id="userTypeError" style="color:aliceblue"></small>
+                        </div>
                         <div class="input-group two-groop">
                             <span><i class="fa fa-key" aria-hidden="true"></i></span>
                             <input type="Password" name="password" placeholder="Password" >
@@ -103,6 +111,7 @@ else {
 	  $('#email').html(response.emailError)
 	  $('#phone').html(response.phoneError)
 	  $('#password').html(response.passwordError)
+      $('#userTypeError').html(response.userTypeError)
 		}
 		setTimeout(() => {
             $("#name").html("");
@@ -111,6 +120,7 @@ else {
 			$("#password").html("");
 			$("#message").html("");
 			$("#message").removeClass("alert");
+            $('#userTypeError').html('')
         }, 4000);
     },error: function(xhr, status, error){
                     var message = JSON.parse(xhr.responseText).error;

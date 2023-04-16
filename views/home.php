@@ -92,21 +92,13 @@
 <script src="js/modal.js"></script>
 <script src="js/jquery.js"></script>
 <script>
-	 $(document).ready(function() {
-            // Make an AJAX request to the PHP script
-
+	  $(document).ready(function() {
+            
 			function fetchData() {
-			 
-			 
-// 2. Make an AJAX GET request
-$.ajax({
-  url: "job/data" ,
-  type: "GET",
-  success: function(response) {
-    // 3. Handle the response
-   
-		var data = JSON.parse(JSON.stringify(response));
-				// Loop through the data and create HTML elements to display it				 
+            $.get("job/data", function(response) {
+             
+	            var data = JSON.parse(JSON.stringify(response));
+				 
 				var html = "";
 					for (var i in data){
                     html += "<div class='row'>"+ 
@@ -120,27 +112,34 @@ $.ajax({
 					       +'<p class="info-p1">'+data[i].body+'</p>'+"</div>"
 							+"<a href='#' style= 'margin:3px' class='btn btn-primary'>apply</a >"
 						+ '<button style="margin:3px" data-id="'+ data[i].id + '"class="btn btn-info edit">edit</button >'
-					    +'<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].id + '" class="btn btn-danger delete">delete</a >'
+					    +'<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a >'
 						+'<span class="line1"></span>'+
 						"</div>"+ "</div>"	;
+						var id = data[i].id ;
+						 var user_id = data[i].user_id
 					}
-
 					$("#data-container").html(html);
-					
-					
-      // Show the edit and delete buttons
-     
-  },
-
-});            
+					 
+				});
 			}
 		  		fetchData();
 				setInterval(fetchData, 5000);
 					
 			$(document).on('click', '.delete', function(e){
 					e.preventDefault();
+					const jwtToken = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('jwt_token='))
+  .split('=')[1];
+  const decodedToken = jwt_decode(jwtToken);
+  const userId = decodedToken.user_id;
+
+
 					var id = $(this).data('id');
-					$.ajax({
+
+					console.log(id);
+					if (userId === id) {
+								$.ajax({
 			url: 'delete/'+id,
 			method: 'DELETE',
 			success: function(response) {
@@ -150,12 +149,17 @@ $.ajax({
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown);
 			}});
+					}
+					else{
+						alert('pisss off you wanker ')
+					}
+			
 			})
 
 			$(document).on('click','.edit', function(e){
 				e.preventDefault();
 				openModal();
-			var id = $(this).data('id');
+					var id = $(this).data('id');
 					$.ajax({
 						url: 'fetch/'+id,
 						method: 'GET',
@@ -197,6 +201,7 @@ $.ajax({
 	})
 })
 });
+ 
 </script>
 </div>
 </section>
@@ -263,8 +268,6 @@ $(document).ready(function(){
   .split('=')[1];
   const decodedToken = jwt_decode(jwtToken);
   const userId = decodedToken.user_id;
-  $('#user_id').value = userId;
-
 
 $.ajax({
 type: 'POST',
