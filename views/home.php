@@ -94,12 +94,19 @@
 <script>
 	 $(document).ready(function() {
             // Make an AJAX request to the PHP script
+
 			function fetchData() {
-            $.get("job/data", function(response) {
-                // Parse the JSON response
-	            var data = JSON.parse(JSON.stringify(response));
-				// Loop through the data and create HTML elements to display it
-				 
+			 
+			 
+// 2. Make an AJAX GET request
+$.ajax({
+  url: "job/data" ,
+  type: "GET",
+  success: function(response) {
+    // 3. Handle the response
+   
+		var data = JSON.parse(JSON.stringify(response));
+				// Loop through the data and create HTML elements to display it				 
 				var html = "";
 					for (var i in data){
                     html += "<div class='row'>"+ 
@@ -117,9 +124,15 @@
 						+'<span class="line1"></span>'+
 						"</div>"+ "</div>"	;
 					}
+
 					$("#data-container").html(html);
 					
-				});
+					
+      // Show the edit and delete buttons
+     
+  },
+
+});            
 			}
 		  		fetchData();
 				setInterval(fetchData, 5000);
@@ -190,8 +203,9 @@
 <!-- /info section -->
 <!-- team section -->
 <section class="team" id="team">
-<div id="message"></div>
-<form class="form-container" id="job-form">
+	<div id="message"></div>
+	<form class="form-container" id="job-form">
+	<input type="hidden" id="user_id"  name="hidden">
 <div class="message" id=" message"></div>
 <div class="form-column">
 <label for="name1">Company Name</label>
@@ -228,27 +242,38 @@ style="display: none;" role="status">
 </div>
 </button>
 </form>
+<script src = "js/jwt.js"></script>
 <script src="js/jquery.js"></script>
 <script >
 $(document).ready(function(){
 	let btnDis = false
-$('#job-form').submit(el => {
-	
-el.preventDefault()
-btnDis = btnDis ? false : true;
+	$('#job-form').submit(el => {
+		el.preventDefault()
+		 
+		btnDis = btnDis ? false : true;
     $(`#button-txt`).toggle();
     $(`#button-spinner`).toggle();
     btnDis
         ? $(`#submit-btn`).attr("disabled", true)
         : $(`#submit-btn`).removeAttr("disabled");
-const formData = new FormData(el.target,);
+	 const formData= new FormData(el.target);
+	 const jwtToken = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('jwt_token='))
+  .split('=')[1];
+  const decodedToken = jwt_decode(jwtToken);
+  const userId = decodedToken.user_id;
+  $('#user_id').value = userId;
+
+
 $.ajax({
 type: 'POST',
-url: 'job-form',
+url: 'job-form/'+userId,
 data:formData,
 processData: false,
 contentType: false,
-dataType: 'json',
+dataType: 'json', 
+ 
 success: function(response) {
 if (response.status == 'success') {
 // Display the success message on the HTML page
@@ -280,10 +305,13 @@ else {
 			$("#message").removeClass("alert");
         }, 4000);
 	
-	}
+	},error: function(xhr, status, error) {
+    console.log(error);
+  }
 })
 });
-
+	
+ 
 });
 
 </script>
@@ -670,5 +698,40 @@ else {
 <?php include 'includes/footer.php'; ?>
 <!-- /footer section -->
 
+<script>
+$(document).ready(()=>{
+	// Get the JWT token from the cookie
+const jwtToken = document.cookie
+  .split('; ')
+  .find(row => row.startsWith('jwt_token='))
+  .split('=')[1];
+// Use the JWT token in your API requests
+fetch('home.php', {
+  headers: {
+    'Authorization': `Bearer ${jwtToken}`
+  }
+}).then(response => {
+
+});
+function getCookie(name) {
+  const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return cookieValue ? cookieValue.pop() : '';
+}
+$('#logout').click(e=> {
+	e.preventDefault();
+//	console.log(jwtToken)
+document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  // Redirect the user to the home page 
+  window.location.href = 'home.php';
+})
+if (document.cookie.includes("jwt_token") >= 0) {
+  document.getElementById('joinus').style.display = 'none';
+}
+else {
+document.getElementById("logout").style.display = "none"; 
+}
+})
+
+	</script>
 </body>
 </html>

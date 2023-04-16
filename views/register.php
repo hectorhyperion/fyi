@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-    <title>Gathering Log In form Responsive Widget Template :: W3layouts</title>
+    <title>EUPHONY</title>
     <!-- Meta tag Keywords -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" />
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/style1.css" type="text/css" media="all" />
     <!--//Style-CSS -->
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
     <div class="w3l-signinform">
@@ -23,6 +24,7 @@
                     <h1>Welcome Join Us</h1>
                     <p class="sub-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
                     <h2>Sign up</h2>
+                    <div id="message"></div>
                     <form action="#" id="signup-form">
                         <div class="input-group">
                             <span><i class="fa fa-user" aria-hidden="true"></i></span>
@@ -101,7 +103,6 @@ else {
 	  $('#email').html(response.emailError)
 	  $('#phone').html(response.phoneError)
 	  $('#password').html(response.passwordError)
-	   
 		}
 		setTimeout(() => {
             $("#name").html("");
@@ -111,9 +112,15 @@ else {
 			$("#message").html("");
 			$("#message").removeClass("alert");
         }, 4000);
-	
-	}
-})
+    },error: function(xhr, status, error){
+                    var message = JSON.parse(xhr.responseText).error;
+                   $('#message').html(message).addClass('alert alert-danger');
+        setTimeout(()=>{
+            $('#message').html("");
+            $('#message').removeClass('alert');
+        } , 4000);
+                }
+    })
 });
 
 });
