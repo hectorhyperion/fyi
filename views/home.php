@@ -92,6 +92,7 @@
 <script src="js/modal.js"></script>
 <script src="js/jquery.js"></script>
 <script src="js/functions.js"></script>
+<script src="js/jwt.js"></script>
 <script>
 $(document).ready(function() {
 
@@ -99,15 +100,22 @@ function fetchData() {
 $.get("job/data", function(response) {
 
 var data = JSON.parse(JSON.stringify(response));
-
 var html = "";
+const token = getCookie('jwt');
+
+var jwt_user_id = null;
+if (token) {
+  const decodedToken = jwt_decode(token);
+  jwt_user_id = decodedToken.user_id;
+}
+
 for (var i in data){
 var editBtn = "";
 var deleteBtn = "";
-const jwt = getCookie('jwt');
-if (jwt) {
-editBtn = '<button style="margin:3px" data-id="' + data[i].user_id + '"class="btn btn-info edit">edit</button >';
-deleteBtn = '<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a>';
+
+if (jwt_user_id && data[i].user_id == jwt_user_id) {
+editBtn = '<button style="margin:3px" data-id="' + data[i].id + '"class="btn btn-info edit">edit</button >';
+deleteBtn = '<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].id + '" class="btn btn-danger delete">delete</a>';
 }
 html += "<div class='row'>" +
 "<div class='col-lg-3 col-md-3 info-w3ls'>" +
@@ -124,7 +132,6 @@ deleteBtn +
 '<span class="line1"></span>' +
 "</div>" + "</div>";
 var id = data[i].id;
-var user_id = data[i].user_id
 }
 $("#data-container").html(html);
 });
@@ -144,7 +151,7 @@ const jwtToken = document.cookie
 const decodedToken = jwt_decode(jwtToken);
 const userId = decodedToken.user_id;
 var id = $(this).data('id');				 
-if (userId === id) {
+ 
 $.ajax({
 url: 'delete/'+id,
 method: 'DELETE',
@@ -155,10 +162,7 @@ alert('job deleted sucessfully!');
 error: function(jqXHR, textStatus, errorThrown) {
 alert(errorThrown);
 }});
-}
-else{
-alert('only owner can delete this');
-}
+ 
 })
 $(document).on('click','.edit', function(e){
 
@@ -170,7 +174,7 @@ const decodedToken = jwt_decode(jwtToken);
 const userId = decodedToken.user_id;
 e.preventDefault();
 var id = $(this).data('id');
-if (userId === id) {
+
 openModal();
 $.ajax({
 url: 'fetch/'+id,
@@ -190,10 +194,6 @@ error: function(jqXHR, textStatus, errorThrown) {
 }
 
 })	
-}
-else{
-alert('Only the owner can Edit this Job');
-}
 
 $(document).on('submit','#update-form', function(e){
 e.preventDefault()

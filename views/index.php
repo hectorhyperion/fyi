@@ -90,7 +90,7 @@ $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
   //delete JOBs 
   Flight::route('DELETE  /delete/@id', function($id) use($pdo) {
   
-    $stmt = $pdo->prepare('DELETE FROM jobs WHERE user_id = :id');
+    $stmt = $pdo->prepare('DELETE FROM jobs WHERE id = :id');
 $stmt->execute(array(':id' => $id));
 
 Flight::json(array('success' => true, 'message' => 'Item deleted successfully'));
@@ -148,7 +148,7 @@ if (!empty($response)) {
 } 
 else {
     
-  $stmt = $pdo->prepare("UPDATE  jobs SET company_name = :company_name, email = :email, location = :location, roles = :roles, body = :body, movie_name = :movie_name  WHERE user_id = :id");
+  $stmt = $pdo->prepare("UPDATE  jobs SET company_name = :company_name, email = :email, location = :location, roles = :roles, body = :body, movie_name = :movie_name  WHERE id = :id");
   $stmt->bindParam(':id', $id);
   $stmt->bindParam(':company_name', $company_name);
     $stmt->bindParam(':email', $email);
