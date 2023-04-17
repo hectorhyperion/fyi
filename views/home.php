@@ -47,10 +47,10 @@
 <hr>
 <div id="subform" class="alert aler-success"></div>
 <div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-	<form class="form-container" id="update-form" data-id="id">
-		<input type="hidden" name="id" id="id">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">&times;</span>
+<form class="form-container" id="update-form" data-id="id">
+<input type="hidden" name="id" id="id">
 <div class="message" id=" message"></div>
 <div class="form-column">
 <label for="name">Company Name</label>
@@ -85,139 +85,150 @@
 </div>
 </div>
 </form>
-		<div id="edit"></div>
-  </div>
+<div id="edit"></div>
+</div>
 </div>	
- <div id="data-container"></div>
+<div id="data-container"></div>
 <script src="js/modal.js"></script>
 <script src="js/jquery.js"></script>
 <script src="js/functions.js"></script>
 <script>
-	  $(document).ready(function() {
-            
-			function fetchData() {
-            $.get("job/data", function(response) {
-             
-	            var data = JSON.parse(JSON.stringify(response));
-				 
-				var html = "";
-					for (var i in data){
-                    html += "<div class='row'>"+ 
-					"<div class='col-lg-3 col-md-3 info-w3ls'>"
-					+'<div class="info-agile">'
-					+"<div class='hi-icon-wrap hi-icon-effect-1 hi-icon-effect-1b'>"
-					+"<i class='hi-icon fa fa-cog'><a href='#'></a></i>"
-					   +'<h4>'+ data[i].company_name+'</h4>' 
-					   +'<h3 style="color:#fff">'+ data[i].location+'</h3>' 
-					   			+'<small style="color:white">'+ data[i].roles+'</small>'
-					       +'<p class="info-p1">'+data[i].body+'</p>'+"</div>"
-							+"<a href='#' style= 'margin:3px' class='btn btn-primary'>apply</a >"
-						+ '<button style="margin:3px" data-id="'+ data[i].user_id + '"class="btn btn-info edit">edit</button >'
-					    +'<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a >'
-						+'<span class="line1"></span>'+
-						"</div>"+ "</div>"	;
-						var id = data[i].id ;
-						 var user_id = data[i].user_id
-					}
-					$("#data-container").html(html);
+$(document).ready(function() {
 
-		
-				});
-			}
-		  		fetchData();
-				setInterval(fetchData, 5000);
-					
-			$(document).on('click', '.delete', function(e){
-					e.preventDefault();
-					const jwtToken = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('jwt_token='))
-  .split('=')[1];
-  const decodedToken = jwt_decode(jwtToken);
-  const userId = decodedToken.user_id;
-					var id = $(this).data('id');				 
-					if (userId === id) {
-								$.ajax({
-			url: 'delete/'+id,
-			method: 'DELETE',
-			success: function(response) {
-			// Handle success response
-		 alert('job deleted sucessfully!');
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert(errorThrown);
-			}});
-					}
-					else{
-						 alert('only owner can delete this');
-					}
-			})
-			$(document).on('click','.edit', function(e){
-				const jwtToken = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('jwt_token='))
-  .split('=')[1];
-  const decodedToken = jwt_decode(jwtToken);
-  const userId = decodedToken.user_id;
-			e.preventDefault();
-				var id = $(this).data('id');
-				if (userId === id) {
-				openModal();
-					$.ajax({
-						url: 'fetch/'+id,
-						method: 'GET',
-			success: function(response) {
-			// Handle success response
-			var data = JSON.parse(JSON.stringify(response));
-			$('#name').val(data.company_name);
-			$('#email').val(data.email);
-			$('#location').val(data.location);
-			$('#movie').val(data.movie_name);
-			$('#roles').val(data.roles);
-   		   $('#body-input').val(data.body);
-		  $("#id").val(data.id);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-			}
-			
-		})	
-	}
-	else{
-		alert('Only the owner can Edit this Job');
-	}
+function fetchData() {
+$.get("job/data", function(response) {
 
-		$(document).on('submit','#update-form', function(e){
-		e.preventDefault()
-		const formData = new FormData(e.target,);
-		$.ajax({
-		url: 'put/'+id,
-		type: "POST",  
-		data:formData,
-		processData: false,
-		contentType: false,
-		dataType: 'json',
-		success: function(response) {
-		// Handle the successful response from the server
-		$("#subform").html(response).delay(4000).hide(1); 
-		closeModal();
-		alert('Job Updated sucessfully')	},
-		error: function(xhr, status, error) {
-			alert(error);
-		}
-		});
-	})
-})
+var data = JSON.parse(JSON.stringify(response));
+
+var html = "";
+for (var i in data){
+var editBtn = "";
+var deleteBtn = "";
+const jwt = getCookie('jwt');
+if (jwt) {
+editBtn = '<button style="margin:3px" data-id="' + data[i].user_id + '"class="btn btn-info edit">edit</button >';
+deleteBtn = '<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a>';
+}
+console.log(jwt)
+
+html += "<div class='row'>" +
+"<div class='col-lg-3 col-md-3 info-w3ls'>" +
+'<div class="info-agile">' +
+"<div class='hi-icon-wrap hi-icon-effect-1 hi-icon-effect-1b'>" +
+"<i class='hi-icon fa fa-cog'><a href='#'></a></i>" +
+'<h4>' + data[i].company_name + '</h4>' +
+'<h3 style="color:#fff">' + data[i].location + '</h3>' +
+'<small style="color:white">' + data[i].roles + '</small>' +
+'<p class="info-p1">' + data[i].body + '</p>' + "</div>" +
+"<a href='#' style= 'margin:3px' class='btn btn-primary'>apply</a >" +
+editBtn +
+deleteBtn +
+'<span class="line1"></span>' +
+"</div>" + "</div>";
+var id = data[i].id;
+var user_id = data[i].user_id
+}
+$("#data-container").html(html);
 });
- 
+
+}
+fetchData();
+setInterval(fetchData, 5000);
+
+});
+$(document).on('click', '.delete', function(e){
+
+e.preventDefault();
+const jwtToken = document.cookie
+.split('; ')
+.find(row => row.startsWith('jwt_token='))
+.split('=')[1];
+const decodedToken = jwt_decode(jwtToken);
+const userId = decodedToken.user_id;
+var id = $(this).data('id');				 
+if (userId === id) {
+$.ajax({
+url: 'delete/'+id,
+method: 'DELETE',
+success: function(response) {
+// Handle success response
+alert('job deleted sucessfully!');
+},
+error: function(jqXHR, textStatus, errorThrown) {
+alert(errorThrown);
+}});
+}
+else{
+alert('only owner can delete this');
+}
+})
+$(document).on('click','.edit', function(e){
+
+const jwtToken = document.cookie
+.split('; ')
+.find(row => row.startsWith('jwt_token='))
+.split('=')[1];
+const decodedToken = jwt_decode(jwtToken);
+const userId = decodedToken.user_id;
+e.preventDefault();
+var id = $(this).data('id');
+if (userId === id) {
+openModal();
+$.ajax({
+url: 'fetch/'+id,
+method: 'GET',
+success: function(response) {
+// Handle success response
+var data = JSON.parse(JSON.stringify(response));
+$('#name').val(data.company_name);
+$('#email').val(data.email);
+$('#location').val(data.location);
+$('#movie').val(data.movie_name);
+$('#roles').val(data.roles);
+$('#body-input').val(data.body);
+$("#id").val(data.id);
+},
+error: function(jqXHR, textStatus, errorThrown) {
+}
+
+})	
+}
+else{
+alert('Only the owner can Edit this Job');
+}
+
+$(document).on('submit','#update-form', function(e){
+e.preventDefault()
+const formData = new FormData(e.target,);
+$.ajax({
+url: 'put/'+id,
+type: "POST",  
+data:formData,
+processData: false,
+contentType: false,
+dataType: 'json',
+success: function(response) {
+// Handle the successful response from the server
+$("#subform").html(response).delay(4000).hide(1); 
+closeModal();
+alert('Job Updated sucessfully')	},
+error: function(xhr, status, error) {
+alert(error);
+}
+});
+})
+})
+
+
 </script>
 </div>
 </section>
 <!-- /info section -->
 <!-- team section -->
 <section class="team" id="team">
-	<div id="message"></div>
-	<form class="form-container" id="job-form">
-	<input type="hidden" id="user_id"  name="hidden">
+<div id="message"></div>
+<form class="form-container" id="job-form">
+<input type="hidden" id="user_id"  name="hidden">
 <div class="message" id=" message"></div>
 <div class="form-column">
 <label for="name1">Company Name</label>
@@ -250,7 +261,7 @@
 <button type="submit" id="submit-btn"><span id="button-txt"> Submit</span> 
 <div id="button-spinner"  class="spin-button" 
 style="display: none;" role="status">
-    <span class="sr-only">Loading...</span>
+<span class="sr-only">Loading...</span>
 </div>
 </button>
 </form>
@@ -259,25 +270,25 @@ style="display: none;" role="status">
 <script src="js/functions.js"></script>
 <script >
 $(document).ready(function(){
-	let btnDis = false
-	$('#job-form').submit(el => {
-		el.preventDefault()
-		 
-		btnDis = btnDis ? false : true;
-    $(`#button-txt`).toggle();
-    $(`#button-spinner`).toggle();
-    btnDis
-        ? $(`#submit-btn`).attr("disabled", true)
-        : $(`#submit-btn`).removeAttr("disabled");
-		const jwt = getCookie('jwt');
+let btnDis = false
+$('#job-form').submit(el => {
+el.preventDefault()
+
+btnDis = btnDis ? false : true;
+$(`#button-txt`).toggle();
+$(`#button-spinner`).toggle();
+btnDis
+? $(`#submit-btn`).attr("disabled", true)
+: $(`#submit-btn`).removeAttr("disabled");
+const jwt = getCookie('jwt');
 if (jwt) {
-	 const formData= new FormData(el.target);
-	 const jwtToken = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('jwt_token='))
-  .split('=')[1];
-  const decodedToken = jwt_decode(jwtToken);
-  const userId = decodedToken.user_id;
+const formData= new FormData(el.target);
+const jwtToken = document.cookie
+.split('; ')
+.find(row => row.startsWith('jwt_token='))
+.split('=')[1];
+const decodedToken = jwt_decode(jwtToken);
+const userId = decodedToken.user_id;
 
 $.ajax({
 type: 'POST',
@@ -292,46 +303,46 @@ if (response.status == 'success') {
 $('#message').html(response.message).addClass('alert alert-success text-center');
 $("#job-form")[0].reset();
 btnDis = btnDis ? false : true;
-    $(`#button-txt`).toggle();
-    $(`#button-spinner`).toggle();
+$(`#button-txt`).toggle();
+$(`#button-spinner`).toggle();
 }
 else {
-	btnDis = btnDis ? false : true;
-    $(`#button-txt`).toggle();
-    $(`#button-spinner`).toggle();
-	$('#company_name').html(response.company_nameError)
-	  $('#email-id').html(response.emailError)
-	  $('#roles-id').html(response.rolesError)
-	  $('#body').html(response.bodyError)
-	  $('#movie_name').html(response.movie_nameError)
-		$('#location-id').html(response.locationError)
-		}
-		setTimeout(() => {
-            $("#company_name").html("");
-			$("#email-id").html("");
-			$("#location-id").html("");
-			$("#roles-id").html("");
-			$("#body").html("");
-			$("#movie_name").html("");
-			$("#message").html("");
-			$("#message").removeClass("alert");
-        }, 4000);
-	
-	},error: function(xhr, status, error) {
-    console.log(error);
-  }
-  
+btnDis = btnDis ? false : true;
+$(`#button-txt`).toggle();
+$(`#button-spinner`).toggle();
+$('#company_name').html(response.company_nameError)
+$('#email-id').html(response.emailError)
+$('#roles-id').html(response.rolesError)
+$('#body').html(response.bodyError)
+$('#movie_name').html(response.movie_nameError)
+$('#location-id').html(response.locationError)
+}
+setTimeout(() => {
+$("#company_name").html("");
+$("#email-id").html("");
+$("#location-id").html("");
+$("#roles-id").html("");
+$("#body").html("");
+$("#movie_name").html("");
+$("#message").html("");
+$("#message").removeClass("alert");
+}, 4000);
+
+},error: function(xhr, status, error) {
+console.log(error);
+}
+
 })
 } 
 else {
-	btnDis = btnDis ? false : true;
-    $(`#button-txt`).toggle();
-    $(`#button-spinner`).toggle();
-	location.href= '/fyi/views/login.php';
+btnDis = btnDis ? false : true;
+$(`#button-txt`).toggle();
+$(`#button-spinner`).toggle();
+location.href= '/fyi/views/login.php';
 }
 });
-	
- 
+
+
 });
 
 </script>
@@ -720,38 +731,40 @@ else {
 
 <script>
 $(document).ready(()=>{
-	// Get the JWT token from the cookie
+// Get the JWT token from the cookie
 const jwtToken = document.cookie
-  .split('; ')
-  .find(row => row.startsWith('jwt_token='))
-  .split('=')[1];
+.split('; ')
+.find(row => row.startsWith('jwt_token='))
+.split('=')[1];
 // Use the JWT token in your API requests
 fetch('home.php', {
-  headers: {
-    'Authorization': `Bearer ${jwtToken}`
-  }
+headers: {
+'Authorization': `Bearer ${jwtToken}`
+}
 }).then(response => {
 
 });
 function getCookie(name) {
-  const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-  return cookieValue ? cookieValue.pop() : '';
+const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+return cookieValue ? cookieValue.pop() : '';
 }
 if (document.cookie.includes("jwt_token") >= 0) {
-  document.getElementById('joinus').style.display = 'none';
+document.getElementById('joinus').style.display = 'none';
 }
 else {
-	
-$("#logout").style.display = "none"; 
+$("#find").style.display = "none"; 
 }
 })
 $('#logout').click(e=> {
-	e.preventDefault();
-//	console.log(jwtToken)
+e.preventDefault();
+
 document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  // Redirect the user to the home page 
-  window.location.href = 'home.php';
-})
-	</script>
+// Redirect the user to the home page 
+window.location.href = 'home.php';
+}) 
+
+
+
+</script>
 </body>
 </html>
