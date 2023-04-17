@@ -120,9 +120,15 @@ $(document).ready(function(){
 
 	})();
 </script>
+<script src="js/
+functions.js"></script>
 <script>
 	   $('#joinus').click(e=>{
 		e.preventDefault();
+		const jwt = getCookie('jwt');
+if (jwt) {
+  window.location.href = 'home.php';
+		}		
 		location.href= '/fyi/views/login.php';
 	   })
 </script>

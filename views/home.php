@@ -91,6 +91,7 @@
  <div id="data-container"></div>
 <script src="js/modal.js"></script>
 <script src="js/jquery.js"></script>
+<script src="js/functions.js"></script>
 <script>
 	  $(document).ready(function() {
             
@@ -119,7 +120,8 @@
 						 var user_id = data[i].user_id
 					}
 					$("#data-container").html(html);
-					 
+
+		
 				});
 			}
 		  		fetchData();
@@ -140,18 +142,16 @@
 			method: 'DELETE',
 			success: function(response) {
 			// Handle success response
-		 
+		 alert('job deleted sucessfully!');
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown);
 			}});
 					}
 					else{
-						 alert('only the owner can delete this post');
+						 alert('only owner can delete this');
 					}
-			
 			})
-
 			$(document).on('click','.edit', function(e){
 				const jwtToken = document.cookie
   .split('; ')
@@ -183,9 +183,9 @@
 		})	
 	}
 	else{
-		alert('only the owner can delete this postNot allowed');
+		alert('Only the owner can Edit this Job');
 	}
-	
+
 		$(document).on('submit','#update-form', function(e){
 		e.preventDefault()
 		const formData = new FormData(e.target,);
@@ -200,10 +200,9 @@
 		// Handle the successful response from the server
 		$("#subform").html(response).delay(4000).hide(1); 
 		closeModal();
-		
-		},
+		alert('Job Updated sucessfully')	},
 		error: function(xhr, status, error) {
-		
+			alert(error);
 		}
 		});
 	})
@@ -257,6 +256,7 @@ style="display: none;" role="status">
 </form>
 <script src = "js/jwt.js"></script>
 <script src="js/jquery.js"></script>
+<script src="js/functions.js"></script>
 <script >
 $(document).ready(function(){
 	let btnDis = false
@@ -269,6 +269,8 @@ $(document).ready(function(){
     btnDis
         ? $(`#submit-btn`).attr("disabled", true)
         : $(`#submit-btn`).removeAttr("disabled");
+		const jwt = getCookie('jwt');
+if (jwt) {
 	 const formData= new FormData(el.target);
 	 const jwtToken = document.cookie
   .split('; ')
@@ -284,7 +286,6 @@ data:formData,
 processData: false,
 contentType: false,
 dataType: 'json', 
- 
 success: function(response) {
 if (response.status == 'success') {
 // Display the success message on the HTML page
@@ -319,7 +320,15 @@ else {
 	},error: function(xhr, status, error) {
     console.log(error);
   }
+  
 })
+} 
+else {
+	btnDis = btnDis ? false : true;
+    $(`#button-txt`).toggle();
+    $(`#button-spinner`).toggle();
+	location.href= '/fyi/views/login.php';
+}
 });
 	
  
@@ -728,6 +737,14 @@ function getCookie(name) {
   const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
   return cookieValue ? cookieValue.pop() : '';
 }
+if (document.cookie.includes("jwt_token") >= 0) {
+  document.getElementById('joinus').style.display = 'none';
+}
+else {
+	
+$("#logout").style.display = "none"; 
+}
+})
 $('#logout').click(e=> {
 	e.preventDefault();
 //	console.log(jwtToken)
@@ -735,14 +752,6 @@ document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   // Redirect the user to the home page 
   window.location.href = 'home.php';
 })
-if (document.cookie.includes("jwt_token") >= 0) {
-  document.getElementById('joinus').style.display = 'none';
-}
-else {
-document.getElementById("logout").style.display = "none"; 
-}
-})
-
 	</script>
 </body>
 </html>
