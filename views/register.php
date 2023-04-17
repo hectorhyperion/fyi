@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -42,8 +41,14 @@
                             <small style="color:lavenderblush" id="phone"></small>
                         </div>
                         <div >
-                        <select name="userType" class="input-group ">
-                                        <option value=""> </option>
+                        <div class="input-group ">
+                            <span><i class="fa fa-road" aria-hidden="true"></i></span>
+                            <input type="text" name="location" placeholder=" Location" >
+                            <small style="color:lavenderblush" id="location"></small>
+                        </div>
+                        <div >
+                        <select name="userType" aria-placeholder="Select">
+                                        <option value=""> Select Account type</option>
                                         <option value="talent">Talent</option>
                                         <option value="employer">employer</option>
                                         </select>
@@ -112,6 +117,7 @@ else {
 	  $('#phone').html(response.phoneError)
 	  $('#password').html(response.passwordError)
       $('#userTypeError').html(response.userTypeError)
+      $('#location').html(response.locationError);
 		}
 		setTimeout(() => {
             $("#name").html("");
@@ -121,6 +127,8 @@ else {
 			$("#message").html("");
 			$("#message").removeClass("alert");
             $('#userTypeError').html('')
+            $('#location').html('')
+
         }, 4000);
     },error: function(xhr, status, error){
                     var message = JSON.parse(xhr.responseText).error;

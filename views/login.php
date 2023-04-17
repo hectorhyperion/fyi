@@ -78,10 +78,17 @@ processData: false,
 contentType: false,
 dataType: 'json',
 success: function(response) {
-if (response.status == 'success') {
-// Display the success message on the HTML page
-    window.location.href = '/';
-   console.log('hellowold');
+        console.log(response);
+if (response.status = 'success') {
+    window.location.href = "home.php";
+// Display the success message on the HTML pages
+if (response.indexOf("success") !== -1) {
+            // Redirect to home page
+            window.location.href = "home.php";
+        } else {
+            // Display error message
+            $("#error-message").html(response);
+        }
 }
 else {
 	btnDis = btnDis ? false : true;
@@ -97,21 +104,36 @@ else {
 			$("#message").removeClass("alert");
         }, 4000);
           
-    } ,error: function(xhr, status, errorThrown){
-        try { 
-            var message = JSON.parse(xhr.responseText).error;
-                   $('#message').html(message).addClass('alert alert-danger');
-} catch (error) {
-      console.log(error.message);
+    },error: function(xhr, status, errorThrown) {
+
+var contentType = xhr.getResponseHeader("content-type") || "";
+if (contentType.indexOf('json') > -1) {
+// Handle JSON response as before
+try {
+var message = JSON.parse(xhr.responseText).error;
+$('#message').html(message).addClass('alert alert-danger');
+console.log(errorThrown)
+
+} catch (jsonError) {  
+$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
+console.log(jsonError)
 }
-  
-                  
-        setTimeout(()=>{
-            $('#message').html("");
-            $('#message').removeClass('alert');
-        } , 4000);
-                }
-    });
+} else if (contentType.indexOf('html') > -1) {
+// Extract error message from HTML response
+try {
+var htmlMessage = $(xhr.responseText).filter('title').text();
+$('#message').html(htmlMessage).addClass('alert alert-danger');
+ 
+} catch (htmlError) {
+console.log(htmlError.message);
+c 
+$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
+}
+} else {
+// Unsupported response type
+$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
+}
+}    });
 });
 
 });

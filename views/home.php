@@ -346,61 +346,46 @@ location.href= '/fyi/views/login.php';
 </script>
 </section>
 
-
 <!-- /team section -->
 <!-- testimonial section -->
 <section class="testimonial">
 <div class="container">
-<h3 class="text-center">Our Customer Reviews</h3>
-<p class="text-center">Our Clients Like Us, Please Read Their Opinions</p>
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000" data-pause="hover">
+<h3 class="text-center">Find Talent </h3>
+<p class="text-center">Check out Our list of top Talent</p>
+ 
 <!-- Wrapper for slides -->
-<div class="carousel-inner" role="listbox">
-<div class="item active">
-<div class="losange">
-<div class="los1">
-<img src="images/test-img1.jpg" alt="testimonial"/>
-</div>
-</div>
-<p class="test-p1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ac bibendum sem. Nullam bibendum justo eget lorem porta euismod. Donec et fringilla tortor.</p>
-<hr>
-<h4>Kate Winslet</h4>
-<p class="test-p2">DJ Newyork</p>
-</div>
-<div class="item">
-<div class="losange">
-<div class="los1">
-<img src="images/test-img2.jpg" alt="testimonial"/>
-</div>
-</div>
-<p class="test-p1">Cras nunc nisi, sagittis et nibh in, feugiat dapibus quam. Ut pellentesque dictum massa, pellentesque aliquet nisi aliquam in. Maecenas non sollicitudin dui.</p>
-<hr>
-<h4>Britney Spears</h4>
-<p class="test-p2">Music Director</p>
-</div>
-<div class="item">
-<div class="losange">
-<div class="los1">
-<img src="images/test-img3.jpg" alt="testimonial"/>
-</div>
-</div>
-<p class="test-p1">Mauris nec ex quis elit euismod posuere. Sed ultricies mollis turpis, a convallis diam dignissim eu. Suspendisse elit elit, suscipit eu sollicitudin facilisis.</p>
-<hr>
-<h4>Lady Gaga</h4>
-<p class="test-p2">Piano Artist</p>
-</div>
-</div>
+ <div id="talent"></div>
 <!-- Left and right controls -->
-<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-<span class="sr-only">Previous</span>
-</a>
-<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-<span class="sr-only">Next</span>
-</a>
+ 
 </div>
 </div>
+
+<script>
+
+        $(document).ready(function() {
+			$.get("talents", function(response) {
+				 var data = JSON.parse(JSON.stringify(response));
+				 var html = ''
+				 for (var i in data) {
+				html+= "<div class='row'>" +
+"<div class='col-lg-3 col-md-3 info-w3ls'>" +
+'<div class="info-agile">' +
+"<div class='hi-icon-wrap hi-icon-effect-1 hi-icon-effect-1b'>" +
+"<i class='hi-icon fa fa-cog'><a href='#'></a></i>" +
+'<h4>' + data[i].name + '</h4>' +
+'<h3 style="color:#fff">' + data[i].phone + '</h3>' +
+'<small style="color:white">' + data[i].email + '</small>' +
+'<p class="info-p1">' + data[i].location + '</p>' + "</div>" +
+
+'<span class="line1"></span>' +
+"</div>" + "</div>";
+ }
+ $('#talent').html(html);
+
+			}
+			)
+        });
+    </script>
 </section>
 <!-- /testimonial section -->
 <!-- work section -->
@@ -760,8 +745,6 @@ document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 // Redirect the user to the home page 
 window.location.href = 'home.php';
 }) 
-
-
 
 </script>
 </body>
