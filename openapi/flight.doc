@@ -1,0 +1,23 @@
+The given code is a PHP script that performs CRUD (Create, Read, Update, Delete) operations on a MySQL database table named "jobs." The script uses the Flight PHP micro-framework for routing and handling HTTP requests.
+
+First, the script includes the necessary PHP files by requiring the "autoload.php" file located in the "vendor" directory. The script also sets the default timezone to UTC.
+
+Next, the script establishes a connection to the MySQL database using the PDO (PHP Data Object) class. If an error occurs while connecting to the database, the script terminates execution and outputs an error message.
+
+The script then defines several routes using the Flight micro-framework:
+
+GET /: This route redirects the user to the home page "/home.php".
+
+POST /job-form/@userId: This route handles the form data submitted by the user to create a new job. The route checks the submitted data for errors and inserts the data into the "jobs" table if no errors are found. The user ID is passed as a parameter to the route.
+
+GET /job/data: This route fetches all the data from the "jobs" table and returns it as a JSON-encoded response.
+
+DELETE /delete/@id: This route deletes a job from the "jobs" table based on the job ID passed as a parameter.
+
+GET /fetch/@id: This route fetches a single job from the "jobs" table based on the job ID passed as a parameter and returns it as a JSON-encoded response.
+
+POST /put/@id: This route handles the form data submitted by the user to update an existing job. The route checks the submitted data for errors and updates the corresponding row in the "jobs" table if no errors are found. The job ID is passed as a parameter to the route.
+
+In addition to the route definitions, the script also defines a function to generate JSON-encoded responses using the Flight micro-framework.
+
+Overall, this script provides a simple example of how to use the Flight micro-framework and the PDO class to perform CRUD operations on a MySQL database table.

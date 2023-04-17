@@ -1,0 +1,38 @@
+The code is written in PHP, a popular server-side scripting language used for web development. The code implements an API that allows users to create, retrieve, update and delete job postings.
+
+The code imports the Firebase\JWT\JWT library using the Composer autoloader. The JWT library is used for JSON Web Token-based authentication.
+
+The code uses PDO (PHP Data Objects) to interact with the MySQL database. The PDO object is created with the provided database credentials, and a PDOException is thrown if the connection to the database fails.
+
+The code uses the Flight micro-framework to define API routes. The Flight::route() method is used to map HTTP requests to callback functions that implement the corresponding API logic.
+
+The following API routes are defined in the code:
+
+GET /
+Maps the root route to redirect to the home.php page.
+
+POST /job-form/@userId
+This route allows a user to create a new job posting. The request must contain the following parameters:
+
+company_name: the name of the company posting the job
+email: the email address to contact for the job
+location: the location of the job
+roles: the roles required for the job
+body: the description of the job
+movie_name: the name of the movie (related to the job)
+userId: the ID of the user creating the job posting
+If any of the required parameters are missing or empty, the route will return an error response with the corresponding error message. If all the parameters are provided, the route will insert the job posting data into the jobs table and return a success response with a message indicating that the job was created.
+
+GET /job/data
+This route retrieves all job postings from the jobs table and returns them as a JSON array.
+
+DELETE /delete/@id
+This route allows the user to delete a job posting by providing the ID of the job posting in the URL. The route will delete the corresponding job posting from the jobs table and return a success response with a message indicating that the job was deleted.
+
+GET /fetch/@id
+This route allows the user to retrieve a single job posting by providing the ID of the job posting in the URL. The route will retrieve the corresponding job posting from the jobs table and return it as a JSON object.
+
+POST /put/@id
+This route allows the user to update a job posting by providing the ID of the job posting in the URL and the updated job posting data in the request body. The request must contain the same parameters as the POST /job-form route. If any of the required parameters are missing or empty, the route will return an error response with the corresponding error message. If all the parameters are provided, the route will update the job posting data in the jobs table and return a success response with a message indicating that the job was updated.
+
+Note: The code does not implement any authentication or authorization checks. It is assumed that the API is running on a secure server and that the client making the requests is authorized to do so.
