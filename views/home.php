@@ -109,8 +109,6 @@ if (jwt) {
 editBtn = '<button style="margin:3px" data-id="' + data[i].user_id + '"class="btn btn-info edit">edit</button >';
 deleteBtn = '<a href="#" style= "margin:3px" id ="delete" data-id="' + data[i].user_id + '" class="btn btn-danger delete">delete</a>';
 }
-console.log(jwt)
-
 html += "<div class='row'>" +
 "<div class='col-lg-3 col-md-3 info-w3ls'>" +
 '<div class="info-agile">' +

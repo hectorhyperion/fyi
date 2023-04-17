@@ -120,8 +120,7 @@ $(document).ready(function(){
 
 	})();
 </script>
-<script src="js/
-functions.js"></script>
+<script src="js/functions.js"></script>
 <script>
 	   $('#joinus').click(e=>{
 		e.preventDefault();
@@ -131,6 +130,16 @@ if (jwt) {
 		}		
 		location.href= '/fyi/views/login.php';
 	   })
+	   const jwt = getCookie('jwt');
+	   if(!jwt) {
+		try{
+			document.querySelector('#logout').style.display = 'none';
+		}
+		catch(e){
+			console.log(e.message);
+		}
+	
+	   }
 </script>
 <!-- /js for tabs -->
 <!-- js files for banner -->
