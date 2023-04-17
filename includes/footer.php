@@ -128,7 +128,7 @@ $(document).ready(function(){
 if (jwt) {
   window.location.href = 'home.php';
 		}		
-		location.href= '/fyi/views/login.php';
+		location.href= '/fyi/login.php';
 	   })
 	   const jwt = getCookie('jwt');
 	   if(!jwt) {

@@ -336,7 +336,7 @@ else {
 btnDis = btnDis ? false : true;
 $(`#button-txt`).toggle();
 $(`#button-spinner`).toggle();
-location.href= '/fyi/views/login.php';
+location.href= '/fyi/login.php';
 }
 });
 
@@ -733,6 +733,7 @@ return cookieValue ? cookieValue.pop() : '';
 }
 if (document.cookie.includes("jwt_token") >= 0) {
 document.getElementById('joinus').style.display = 'none';
+
 }
 else {
 $("#find").style.display = "none"; 

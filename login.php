@@ -21,8 +21,8 @@
             <!-- main content -->
             <div class="w3l-form-info">
                 <div class="w3_info">
-                    <h1>Welcome LOGIN </h1>
-                    <p class="sub-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    <h1><a href="home.php">Welcome LOGIN </a></h1>
+    <p class="sub-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
                     <h2>Sign In</h2>
                     <div id="message"></div>
                     <form action="#" id="login-form">
@@ -112,26 +112,25 @@ if (contentType.indexOf('json') > -1) {
 try {
 var message = JSON.parse(xhr.responseText).error;
 $('#message').html(message).addClass('alert alert-danger');
-console.log(errorThrown)
-
 } catch (jsonError) {  
 $('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
 console.log(jsonError)
 }
+
 } else if (contentType.indexOf('html') > -1) {
 // Extract error message from HTML response
 try {
-var htmlMessage = $(xhr.responseText).filter('title').text();
-$('#message').html(htmlMessage).addClass('alert alert-danger');
+var htmlMessage = $(xhr.responseText);
+$('#message').html('User Not Found').addClass('alert alert-danger').filter().text();
  
 } catch (htmlError) {
 console.log(htmlError.message);
-c 
-$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
+
+//$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
 }
 } else {
 // Unsupported response type
-$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
+//$('#message').html('An error occurred. Please try again later.').addClass('alert alert-danger');
 }
 }    });
 });

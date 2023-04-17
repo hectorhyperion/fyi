@@ -15,4 +15,5 @@
     RewriteRule ^ index.php [L]
     RewriteCond %{HTTP:Authorization} .+
     RewriteRule ^ - [E=HTTP_AUTHORIZATION:%0]
+     
 </IfModule>

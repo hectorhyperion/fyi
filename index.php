@@ -1,5 +1,6 @@
 <?php 
-require  __DIR__ . '../../vendor/autoload.php';
+require  __DIR__ . '/vendor/autoload.php';
+
 use Firebase\JWT\JWT;
 date_default_timezone_set('UTC');
 $host = 'localhost';
@@ -14,6 +15,7 @@ try {
 Flight::route('GET /', function(){
     Flight::redirect('/home.php');
 });
+
 //create job 
 Flight::route('POST /job-form/@userId', function($userId) use ($pdo){
 
@@ -251,7 +253,7 @@ if ($user !== null && password_verify($password, $user['password'])) {
   Flight::response()->status(200);
   Flight::response()->write(json_encode(array('success' =>true,'token' => $jwt)));
   setcookie('jwt_token', $jwt, time() + 3600, '/');
- 
+
   Flight::response()->send();
 
   exit;
@@ -259,6 +261,8 @@ if ($user !== null && password_verify($password, $user['password'])) {
 }
 else{
     Flight::json(array('error' => 'Invalid Credentials'), 401);
+    Flight::json(array('error' => 'User Not Found '), 500);
+
     exit();
 }
 });

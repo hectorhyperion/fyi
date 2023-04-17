@@ -20,7 +20,8 @@
             <!-- main content -->
             <div class="w3l-form-info">
                 <div class="w3_info">
-                    <h1>Welcome Join Us</h1>
+          
+                    <h1><a href="home.php"> Welcome Join Us</a></h1>
                     <p class="sub-para">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
                     <h2>Sign up</h2>
                     <div id="message"></div>
